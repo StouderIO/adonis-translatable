@@ -41,6 +41,7 @@
     "@adonisjs/assembler": "^7.0.0-1",
     "@adonisjs/core": "^6.1.5-38",
     "@adonisjs/eslint-config": "^1.2.1",
+    "@adonisjs/i18n": "2.0.0-9",
     "@adonisjs/lucid": "19.0.0-8",
     "@adonisjs/prettier-config": "^1.2.1",
     "@adonisjs/tsconfig": "^1.2.1",
@@ -55,11 +56,13 @@
     "eslint": "^8.38.0",
     "np": "^9.2.0",
     "prettier": "^3.1.1",
+    "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "@adonisjs/core": "^6.1.5-38",
+    "@adonisjs/i18n": "2.0.0-9",
     "@adonisjs/lucid": "19.0.0-8"
   },
   "publishConfig": {

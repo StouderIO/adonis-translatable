@@ -1,106 +1,130 @@
-import { fileURLToPath } from 'node:url'
-import { AppFactory } from '@adonisjs/core/factories/app'
-import { Logger } from '@adonisjs/core/logger'
 import { Emitter } from '@adonisjs/core/events'
-import { join } from 'node:path'
-import { ConnectionConfig, DatabaseConfig } from '@adonisjs/lucid/types/database'
-import { knex } from 'knex'
+import { LoggerFactory } from '@adonisjs/core/factories/logger'
 import { Database } from '@adonisjs/lucid/database'
-import { getActiveTest } from '@japa/runner'
-// @ts-expect-error
-import { Adapter } from '@adonisjs/lucid/build/src/orm/adapter/index.js'
-import { AdapterContract } from '@adonisjs/lucid/types/model'
 import { BaseModel } from '@adonisjs/lucid/orm'
+import { getActiveTest } from '@japa/runner'
+import { mkdir } from 'node:fs/promises'
+import { join } from 'node:path'
+import { ApplicationService } from '@adonisjs/core/types'
+import { IgnitorFactory } from '@adonisjs/core/factories'
+import { defineConfig, formatters, loaders } from '@adonisjs/i18n'
 
-export const APP_ROOT = new URL('./tmp', import.meta.url)
-export const SQLITE_BASE_PATH = fileURLToPath(APP_ROOT)
+const BASE_URL = new URL('./tmp/', import.meta.url)
+const IMPORTER = (filePath: string) => {
+  if (filePath.startsWith('./') || filePath.startsWith('../')) {
+    return import(new URL(filePath, BASE_URL).href)
+  }
+  return import(filePath)
+}
 
-const app = new AppFactory().create(APP_ROOT, () => {})
-export const emitter = new Emitter<any>(app)
-export const logger = new Logger({})
-export const createEmitter = () => new Emitter<any>(app)
+export async function createApp(baseUrl: string) {
+  const ignitor = new IgnitorFactory()
+    .withCoreConfig()
+    .withCoreProviders()
+    .merge({
+      config: {
+        i18n: defineConfig({
+          formatter: formatters.icu(),
+          loaders: [
+            loaders.fs({
+              location: baseUrl,
+            }),
+          ],
+        }),
+      },
+      rcFileContents: {
+        providers: [() => import('@adonisjs/i18n/i18n_provider')],
+      },
+    })
+    .create(BASE_URL, {
+      importer: IMPORTER,
+    })
 
-export function getConfig(): ConnectionConfig {
-  return {
-    client: 'better-sqlite3',
-    connection: {
-      filename: join(SQLITE_BASE_PATH, 'better-sqlite-db.sqlite'),
-    },
-    useNullAsDefault: true,
-    debug: !!process.env.DEBUG,
-    pool: {
-      afterCreate(connection, done) {
-        connection.unsafeMode(true)
-        done()
+  const app = ignitor.createApp('web')
+  await app.init()
+  await app.boot()
+  return app
+}
+
+export async function createDatabase(app: ApplicationService) {
+  const test = getActiveTest()
+  if (!test) {
+    throw new Error('Cannot use "createDatabase" outside of a Japa test')
+  }
+
+  await mkdir(test.context.fs.basePath)
+
+  const logger = new LoggerFactory().create()
+  const emitter = new Emitter(app)
+  const db = new Database(
+    {
+      connection: 'primary',
+      connections: {
+        primary: {
+          client: 'sqlite3',
+          connection: {
+            filename: join(test.context.fs.basePath, 'db.sqlite3'),
+          },
+        },
       },
     },
-  }
-}
+    logger,
+    emitter
+  )
 
-export async function setup(destroyDb: boolean = true) {
-  const db = knex(Object.assign({}, getConfig(), { debug: false }))
-
-  const hasPostTable = await db.schema.hasTable('posts')
-  if (!hasPostTable) {
-    await db.schema.createTable('posts', (table) => {
-      table.increments('id')
-      table.string('author').notNullable()
-      table.timestamps(true)
-    })
-  }
-
-  const hasPostTranslationTable = await db.schema.hasTable('post_translations')
-  if (!hasPostTranslationTable) {
-    await db.schema.createTable('posts', (table) => {
-      table.increments('id')
-      table.integer('post_id').unsigned().references('id').inTable('posts').onDelete('CASCADE')
-      table.string('locale').notNullable()
-      table.string('title').notNullable()
-      table.string('body').notNullable()
-      table.timestamps(true)
-    })
-  }
-
-  if (destroyDb) {
-    await db.destroy()
-  }
-}
-
-export async function cleanup(customTables: string[] = []) {
-  const db = knex(Object.assign({}, getConfig(), { debug: false }))
-
-  for (const table of customTables) {
-    await db.schema.dropTableIfExists(table)
-  }
-  await db.schema.dropTableIfExists('posts')
-  await db.schema.dropTableIfExists('post_translations')
-
-  await db.destroy()
-}
-
-export function getDb(eventEmitter?: Emitter<any>, config?: DatabaseConfig) {
-  const defaultConfig = {
-    connection: 'primary',
-    connections: {
-      primary: getConfig(),
-      secondary: getConfig(),
-    },
-  }
-
-  const db = new Database(config || defaultConfig, logger, eventEmitter || createEmitter())
-  const test = getActiveTest()
-  test?.cleanup(() => {
-    return db.manager.closeAll()
-  })
-
+  test.cleanup(() => db.manager.closeAll())
+  BaseModel.useAdapter(db.modelAdapter())
   return db
 }
 
-export function ormAdapter(db: Database) {
-  return new Adapter(db)
-}
+export async function createTables(db: Database) {
+  const test = getActiveTest()
+  if (!test) {
+    throw new Error('Cannot use "createTables" outside of a Japa test')
+  }
 
-export function getBaseModel(adapter: AdapterContract) {
-  BaseModel.$adapter = adapter
-  return BaseModel
+  test.cleanup(async () => {
+    await db.connection().schema.dropTable('posts')
+    await db.connection().schema.dropTable('post_translations')
+  })
+  await db.connection().schema.createTable('posts', (table) => {
+    table.increments('id')
+    table.string('author').notNullable()
+    table.timestamps(true)
+  })
+  await db.connection().table('posts').insert({ author: 'John Doe' })
+  await db.connection().table('posts').insert({ author: 'Jane Doe' })
+
+  await db.connection().schema.createTable('post_translations', (table) => {
+    table.increments('id')
+    table.integer('post_id').unsigned().references('id').inTable('posts').onDelete('CASCADE')
+    table.string('locale').notNullable()
+    table.string('title').notNullable()
+    table.string('body').notNullable()
+    table.timestamps(true)
+  })
+  await db.connection().table('post_translations').insert({
+    post_id: 1,
+    locale: 'en',
+    title: 'Hello, world',
+    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  })
+  await db.connection().table('post_translations').insert({
+    post_id: 1,
+    locale: 'fr',
+    title: 'Bonjour, monde',
+    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  })
+  await db.connection().table('post_translations').insert({
+    post_id: 2,
+    locale: 'en',
+    title: 'Foo',
+    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  })
+  await db.connection().table('post_translations').insert({
+    post_id: 2,
+    locale: 'fr',
+    title: 'Bar',
+    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  })
 }
