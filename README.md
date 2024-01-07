@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/2575182/236930626-40d7d2a8-2ded-4f72-a9e8-d8f4ce43ec79.png" />
+  <img src="https://raw.githubusercontent.com/StouderIO/adonis-translatable/main/.github/images/header.png" />
   <h3>@stouder-io/adonis-translatable</h3>
-  <p>AdonisJS package to handle translations for your models.</p>
+  <p>Translatable fields for AdonisJS models.</p>
   <a href="https://www.npmjs.com/package/@stouder-io/adonis-translatable">
     <img src="https://img.shields.io/npm/v/@stouder-io/adonis-translatable.svg?style=for-the-badge&logo=npm" />
   </a>

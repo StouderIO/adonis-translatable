@@ -1,6 +1,6 @@
 {
   "name": "@stouder-io/adonis-translatable",
-  "description": "AdonisJS package to handle translations for your models.",
+  "description": "Translatable fields for AdonisJS models.",
   "version": "1.0.0",
   "engines": {
     "node": ">=18.16.0"
@@ -30,7 +30,15 @@
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "translation",
+    "translatable",
+    "i18n",
+    "lucid",
+    "adonis",
+    "adonisjs",
+    "models"
+  ],
   "author": "Xavier Stouder <xavier@stouder.io> (https://stouder.io)",
   "license": "MIT",
   "devDependencies": {
