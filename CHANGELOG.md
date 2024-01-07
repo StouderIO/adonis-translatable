@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/StouderIO/adonis-translatable/compare/v1.0.0...v1.0.1) (2024-01-07)
+
+
+### Miscellaneous Chores
+
+* release 1.0.1 ([896c2ca](https://github.com/StouderIO/adonis-translatable/commit/896c2ca4239074ad962b04c15cd73c4841bc2955))
+
 ## 1.0.0 (2024-01-07)
 
 

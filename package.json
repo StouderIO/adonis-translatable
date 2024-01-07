@@ -1,7 +1,7 @@
 {
   "name": "@stouder-io/adonis-translatable",
   "description": "Translatable fields for AdonisJS models.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "node": ">=18.16.0"
   },
