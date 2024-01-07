@@ -1,7 +1,7 @@
 {
   "name": "@stouder-io/adonis-translatable",
   "description": "AdonisJS package to handle translations for your models.",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "engines": {
     "node": ">=18.16.0"
   },
