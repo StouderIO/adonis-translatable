@@ -20,7 +20,6 @@
   },
   "scripts": {
     "clean": "del-cli build",
-    "copy:templates": "copyfiles \"stubs/**/*.stub\" build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
@@ -29,9 +28,6 @@
     "test": "c8 npm run quick:test",
     "prebuild": "npm run lint && npm run clean",
     "build": "tsc",
-    "postbuild": "npm run copy:templates",
-    "release": "np",
-    "version": "npm run build",
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
@@ -62,7 +58,6 @@
   },
   "peerDependencies": {
     "@adonisjs/core": "^6.1.5-38",
-    "@adonisjs/i18n": "2.0.0-9",
     "@adonisjs/lucid": "19.0.0-8"
   },
   "publishConfig": {

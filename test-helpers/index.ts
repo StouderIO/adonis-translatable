@@ -85,46 +85,28 @@ export async function createTables(db: Database) {
 
   test.cleanup(async () => {
     await db.connection().schema.dropTable('posts')
-    await db.connection().schema.dropTable('post_translations')
   })
   await db.connection().schema.createTable('posts', (table) => {
     table.increments('id')
     table.string('author').notNullable()
+    table.json('title').notNullable()
+    table.json('body').notNullable()
     table.timestamps(true)
   })
-  await db.connection().table('posts').insert({ author: 'John Doe' })
-  await db.connection().table('posts').insert({ author: 'Jane Doe' })
-
-  await db.connection().schema.createTable('post_translations', (table) => {
-    table.increments('id')
-    table.integer('post_id').unsigned().references('id').inTable('posts').onDelete('CASCADE')
-    table.string('locale').notNullable()
-    table.string('title').notNullable()
-    table.string('body').notNullable()
-    table.timestamps(true)
-  })
-  await db.connection().table('post_translations').insert({
-    post_id: 1,
-    locale: 'en',
-    title: 'Hello, world',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  })
-  await db.connection().table('post_translations').insert({
-    post_id: 1,
-    locale: 'fr',
-    title: 'Bonjour, monde',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  })
-  await db.connection().table('post_translations').insert({
-    post_id: 2,
-    locale: 'en',
-    title: 'Foo',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  })
-  await db.connection().table('post_translations').insert({
-    post_id: 2,
-    locale: 'fr',
-    title: 'Bar',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  })
+  await db
+    .connection()
+    .table('posts')
+    .insert({
+      author: 'John Doe',
+      title: { en: 'Hello, world', fr: 'Bonjour, monde' },
+      body: { en: 'Lorem ipsum dolor sit amet', fr: 'Lorem ipsum dolor sit amet' },
+    })
+  await db
+    .connection()
+    .table('posts')
+    .insert({
+      author: 'John Doe',
+      title: { en: 'Foo', fr: 'Bar' },
+      body: { en: 'Lorem ipsum dolor sit amet', fr: 'Lorem ipsum dolor sit amet' },
+    })
 }
