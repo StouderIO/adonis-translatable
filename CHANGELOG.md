@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/StouderIO/adonis-translatable/compare/v1.0.1...v1.0.2) (2024-02-07)
+
+
+### Bug Fixes
+
+* set internal as readonly ([3b9cbd6](https://github.com/StouderIO/adonis-translatable/commit/3b9cbd6edcdc83d312cb39762e525d3435809f26))
+* use object instead of map ([c2a6ee0](https://github.com/StouderIO/adonis-translatable/commit/c2a6ee0794e2ca6e801e79e2220ebfe1fe79725d))
+
 ## [1.0.1](https://github.com/StouderIO/adonis-translatable/compare/v1.0.0...v1.0.1) (2024-01-07)
 
 
