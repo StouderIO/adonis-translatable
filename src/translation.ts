@@ -1,11 +1,9 @@
-interface TranslationAttributes {
-  [key: string]: string
-}
+type TranslationAttributes = Record<string, string>
 
 export default class Translation {
-  #values: Map<string, string> = new Map()
+  #values: Record<string, string> = {}
 
-  static fromDbResponse(response: any) {
+  static fromDbResponse(response: any): Translation | null {
     if (response === null) {
       return null
     }
@@ -16,21 +14,19 @@ export default class Translation {
     return new Translation(attributes)
   }
 
-  static from(values: TranslationAttributes) {
+  static from(values: TranslationAttributes): Translation {
     return new Translation(values)
   }
 
   private constructor(values: TranslationAttributes) {
-    Object.entries(values).forEach(([key, value]) => {
-      this.#values.set(key, value)
-    })
+    this.#values = values
   }
 
-  get(locale: string) {
-    return this.#values.get(locale)
+  get(locale: string): string | undefined {
+    return this.#values[locale]
   }
 
-  getOrFail(locale: string) {
+  getOrFail(locale: string): string {
     const value = this.get(locale)
     if (value === undefined) {
       throw new Error(`No translation found for locale "${locale}"`)
@@ -39,10 +35,10 @@ export default class Translation {
   }
 
   set(locale: string, value: string) {
-    this.#values.set(locale, value)
+    this.#values[locale] = value
   }
 
   toObject() {
-    return Object.fromEntries(this.#values)
+    return this.#values
   }
 }
