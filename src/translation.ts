@@ -37,4 +37,8 @@ export default class Translation {
   set(locale: string, value: string) {
     this.values[locale] = value
   }
+
+  toObject(): TranslationAttributes {
+    return this.values
+  }
 }
