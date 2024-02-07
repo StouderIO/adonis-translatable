@@ -1,7 +1,7 @@
 type TranslationAttributes = Record<string, string>
 
 export default class Translation {
-  #values: Record<string, string> = {}
+  readonly #values: Record<string, string> = {}
 
   static fromDbResponse(response: any): Translation | null {
     if (response === null) {
