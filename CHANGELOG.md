@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/StouderIO/adonis-translatable/compare/v1.0.2...v1.0.3) (2024-02-07)
+
+
+### Bug Fixes
+
+* internal values as readonly public ([f07cdf7](https://github.com/StouderIO/adonis-translatable/commit/f07cdf7e3a12506c2ee4083b33bbc5dd501cbd41))
+
 ## [1.0.2](https://github.com/StouderIO/adonis-translatable/compare/v1.0.1...v1.0.2) (2024-02-07)
 
 
