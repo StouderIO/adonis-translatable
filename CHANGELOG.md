@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/StouderIO/adonis-translatable/compare/v1.0.3...v1.0.4) (2024-02-07)
+
+
+### Bug Fixes
+
+* types ([bdf6981](https://github.com/StouderIO/adonis-translatable/commit/bdf69812de6d28ec19f4a6b0108d94630680175b))
+
 ## [1.0.3](https://github.com/StouderIO/adonis-translatable/compare/v1.0.2...v1.0.3) (2024-02-07)
 
 
