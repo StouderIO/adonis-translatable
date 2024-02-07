@@ -1,7 +1,7 @@
 type TranslationAttributes = Record<string, string>
 
 export default class Translation {
-  readonly #values: Record<string, string> = {}
+  readonly values: Record<string, string> = {}
 
   static fromDbResponse(response: any): Translation | null {
     if (response === null) {
@@ -19,11 +19,11 @@ export default class Translation {
   }
 
   private constructor(values: TranslationAttributes) {
-    this.#values = values
+    this.values = values
   }
 
   get(locale: string): string | undefined {
-    return this.#values[locale]
+    return this.values[locale]
   }
 
   getOrFail(locale: string): string {
@@ -35,10 +35,6 @@ export default class Translation {
   }
 
   set(locale: string, value: string) {
-    this.#values[locale] = value
-  }
-
-  toObject() {
-    return this.#values
+    this.values[locale] = value
   }
 }
