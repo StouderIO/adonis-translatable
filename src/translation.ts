@@ -1,4 +1,4 @@
-type TranslationAttributes = Record<string, string>
+type TranslationAttributes = Record<string, string | null | undefined>
 
 export default class Translation {
   readonly values: Record<string, string> = {}
@@ -19,7 +19,9 @@ export default class Translation {
   }
 
   private constructor(values: TranslationAttributes) {
-    this.values = values
+    this.values = Object.fromEntries(
+      Object.entries(values).filter(([, value]) => value !== null)
+    ) as Record<string, string>
   }
 
   get(locale: string): string | undefined {
