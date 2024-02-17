@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/StouderIO/adonis-translatable/compare/v1.0.4...v1.0.5) (2024-02-17)
+
+
+### Bug Fixes
+
+* do not store nulls ([fb5c095](https://github.com/StouderIO/adonis-translatable/commit/fb5c09562f39b116d21b4a1a25e1673e4b5c7446))
+
 ## [1.0.4](https://github.com/StouderIO/adonis-translatable/compare/v1.0.3...v1.0.4) (2024-02-07)
 
 
