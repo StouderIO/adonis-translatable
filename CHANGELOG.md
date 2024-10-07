@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/StouderIO/adonis-translatable/compare/v1.0.5...v1.1.0) (2024-10-07)
+
+
+### Features
+
+* update deps ([3589392](https://github.com/StouderIO/adonis-translatable/commit/358939247e676e1cafe261c04579f4f8843c9d38))
+
 ## [1.0.5](https://github.com/StouderIO/adonis-translatable/compare/v1.0.4...v1.0.5) (2024-02-17)
 
 
