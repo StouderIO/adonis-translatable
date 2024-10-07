@@ -8,7 +8,7 @@ test.group('Translation', () => {
       fr: 'Bonjour, monde',
     })
     assert.isNotNull(entry)
-    assert.instanceOf(entry, Translation)
+    assert.isTrue(entry instanceof Translation)
 
     const entry2 = Translation.fromDbResponse(null)
     assert.isNull(entry2)
@@ -20,7 +20,7 @@ test.group('Translation', () => {
       fr: 'Bonjour, monde',
     })
     assert.isNotNull(entry)
-    assert.instanceOf(entry, Translation)
+    assert.isTrue(entry instanceof Translation)
   })
 
   test('get', async ({ assert }) => {
